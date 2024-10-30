@@ -295,6 +295,7 @@ async function login() {
             var result = await response.json();
 
             localStorage.setItem('userId', result.userId);
+            localStorage.setItem('email', result.email);
 
 
             alert("Login successful");
