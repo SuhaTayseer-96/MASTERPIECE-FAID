@@ -68,11 +68,17 @@
               </a>
           </li>
           <li class="pc-item">
-              <a href="user-card.html" class="pc-link">
-                  <span class="pc-micon"><i class="fas fa-users"></i></span>
-                  <span class="pc-mtext">Users</span>
-              </a>
-          </li>
+            <a href="allUsers.html" class="pc-link">
+                <span class="pc-micon"><i class="fas fa-users"></i></span>
+                <span class="pc-mtext">Users</span>
+            </a>
+        </li>
+        <li class="pc-item">
+          <a href="user-card.html" class="pc-link">
+              <span class="pc-micon"><i class="fas fa-users"></i></span>
+              <span class="pc-mtext">Restaurants</span>
+          </a>
+      </li>
           <li class="pc-item">
               <a href="calendar.html" class="pc-link">
                   <span class="pc-micon"><i class="fas fa-calendar-alt"></i></span>
@@ -123,10 +129,7 @@
           </li>
       </ul>
   </div>
-  
-             
-
-      </ul>
+        </ul>
       <div class="card nav-action-card bg-brand-color-4">
         <div class="card-body" style="background-image: url('https://html.phoenixcoded.net/light-able/bootstrap/assets/images/layout/nav-card-bg.svg')">
           <h5 class="text-dark">Help Center</h5>
@@ -709,13 +712,13 @@
               <div class="col-md-12">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="https://html.phoenixcoded.net/light-able/bootstrap/dashboard/index.html">Home</a></li>
-                  <li class="breadcrumb-item"><a href="javascript: void(0)">Profile</a></li>
-                  <li class="breadcrumb-item" aria-current="page">User Card</li>
+                  <li class="breadcrumb-item"><a href="javascript: void(0)">Admin Dashboard</a></li>
+                  <li class="breadcrumb-item" aria-current="page">Restaurants</li>
                 </ul>
               </div>
               <div class="col-md-12">
                 <div class="page-header-title">
-                  <h2 class="mb-0">User Card</h2>
+                  <h2 class="mb-0">Restaurants</h2>
                 </div>
               </div>
             </div>
@@ -964,15 +967,12 @@
   <!-- [Body] end -->
 <script>
   document.addEventListener('DOMContentLoaded', async function () {
-    // Function to fetch restaurants from API
     async function fetchRestaurants() {
         try {
-            const response = await fetch('https://localhost:44395/api/SAdmin/RestsCards'); // Replace with your actual API route
+            const response = await fetch('https://localhost:44395/api/SAdmin/RestsCards'); 
             const restaurants = await response.json();
-
-            // Populate the card container
             const cardContainer = document.getElementById('restaurant-cards-container');
-            cardContainer.innerHTML = ''; // Clear the container before inserting new cards
+            cardContainer.innerHTML = ''; 
 
             restaurants.forEach(restaurant => {
                 const card = `
@@ -983,7 +983,7 @@
                                     <br>
                                 </div>
                                 <div class="chat-avtar card-user-image">
-                                    <img src="${restaurant.image}" alt="${restaurant.name}" class="img-thumbnail rounded-circle" />
+                                    <img src="../../../../../${restaurant.image}" alt="${restaurant.name}" class="img-thumbnail rounded-circle" />
                                     <i class="chat-badge bg-success"></i>
                                 </div>
                                 <div class="d-flex">

@@ -16,7 +16,7 @@ function checkLoginStatus() {
      debugger
 
      if(userEmail === "s@admin.com"){
-        window.location.href = "/admin/html.phoenixcoded.net/light-able/bootstrap/application/account-profile.html";
+        window.location.href = "admin/html.phoenixcoded.net/light-able/bootstrap/application/account-profile.html";
         return ;
      }
 
