@@ -276,6 +276,48 @@ a {
   text-align: center;
 }
 
+
+/*payment modal*/
+/* Modal overlay styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+/* Modal content styling */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the OK button */
+#okButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#okButton:hover {
+    background-color: #0056b3;
+}
+
 </style>
 </head>
 
@@ -439,7 +481,7 @@ a {
                                                 </span>
                                             </label>
                                         </div>
-                                
+                                        
                                         <!-- Cash on Delivery Option -->
                                         <div class="col-lg-3 col-sm-6">
                                             <label class="card-radio-label">
@@ -451,9 +493,23 @@ a {
                                             </label>
                                         </div>
                                     </div>
+                                    <!-- ===========================-->
+                                    <div id="successModal" style="display: none;">
+                                        <div class="modal-content">
+                                            <p>Payment Successful!</p>
+                                            <p>Thank you for your order, <span id="payerName"></span>.</p>
+                                            <button id="okButton">OK</button>
+                                        </div>
+                                    </div>
                                     
-                                    <!-- PayPal Button Container -->
-                                    <!-- <div id="paypal-button-container" style="display: none;"></div>   -->
+                                    <div id="orderConfirmation" style="display: none;">
+                                        <div class="confirmation-content">
+                                            <h2>Order Confirmation</h2>
+                                            <p>Your order has been successfully created. Order ID: <span id="orderId"></span></p>
+                                            <p>Your order will be processed shortly. Thank you!</p>
+                                        </div>
+                                    </div>
+                                    
                                     <div id="cartItems"></div> <!-- Container for cart items -->
                                     <div id="totalAmount"></div> <!-- Element where total amount will be displayed -->
                                     <div id="paypal-button-container" style="display: none;"></div>
@@ -489,9 +545,16 @@ a {
                     <a href="shop.html" class="btn btn-link text-muted">
                         <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
                 </div> <!-- end col -->
-                <div class="col">
+                <!-- <div class="col">
+                    <div class="text-end mt-2 mt-sm-0">
+                        <button id="proceedButton" class="btn btn-success" disabled>
+                            <i class="mdi mdi-cart-outline me-1"></i> Proceed
+                        </button>
+                    </div>
+                </div> -->
                 </div> <!-- end col -->
-            </div> <!-- end row-->
+            </div>
+        </div>
         </div>
     </div>
     <!-- end row -->
@@ -613,65 +676,160 @@ loadUserProfile(userId);
 </script> -->
 
 <script>
-    let isPaypalButtonRendered = false; // Flag to track if PayPal button is already rendered
 
-    async function fetchCartItems() {
-        const userId = localStorage.getItem('userId');
-        let totalAmount = 0;
+let isPaypalButtonRendered = false;  // Flag to track if PayPal button is already rendered
+let paymentData = null;  // Store payment data for later use
 
+// Function to fetch cart items and calculate the total amount
+async function fetchCartItems() {
+    const userId = localStorage.getItem('userId');
+    let totalAmount = 0;
+
+    try {
+        const response = await fetch(`https://localhost:44395/api/Restaurant/cartItem/${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch cart items");
+        
+        const cartItems = await response.json();
+        const cartContainer = document.getElementById('cartItems');
+        const totalAmountElem = document.getElementById('totalAmount');
+        cartContainer.innerHTML = '';  // Clear existing items
+
+        cartItems.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            totalAmount += itemTotal;
+
+            cartContainer.innerHTML += `
+                <div class="cart-item d-flex justify-content-between align-items-center mb-3">
+                    <div>${item.foodName} (x${item.quantity})</div>
+                    <div>$${itemTotal.toFixed(2)}</div>
+                </div>
+            `;
+        });
+
+        totalAmountElem.textContent = `$${totalAmount.toFixed(2)}`;
+        return totalAmount;  // Return the calculated total amount
+    } catch (error) {
+        console.error('Error fetching cart items:', error);
+        alert('An error occurred while fetching cart items.');
+    }
+}
+
+// Event listener for the "OK" button in the modal
+// Event listener for the "OK" button in the modal
+document.getElementById('okButton').addEventListener('click', async function () {
+    const successModal = document.getElementById('successModal');
+    const orderConfirmation = document.getElementById('orderConfirmation');
+
+    // Hide the success modal if it exists
+    if (successModal) {
+        successModal.style.display = 'none';
+    }
+
+    // Only proceed if paymentData exists to avoid duplicate calls
+    if (paymentData) {
         try {
-            const response = await fetch(`https://localhost:44395/api/Restaurant/cartItem/${userId}`);
-            const cartItems = await response.json();
-            const cartContainer = document.getElementById('cartItems');
-            const totalAmountElem = document.getElementById('totalAmount');
-            cartContainer.innerHTML = ''; // Clear existing items
+            // Temporarily disable the "OK" button to prevent multiple clicks
+            document.getElementById('okButton').disabled = true;
 
-            cartItems.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                totalAmount += itemTotal;
+            // Create order and reset payment data upon successful creation
+            const orderId = await createOrder(paymentData.userId); // Call createOrder and store the returned OrderId
+            if (orderId) {
+                alert('Order successfully created!');
 
-                cartContainer.innerHTML += `
-                    <div class="cart-item d-flex justify-content-between align-items-center mb-3">
-                        <div>${item.foodName} (x${item.quantity})</div>
-                        <div>$${itemTotal.toFixed(2)}</div>
-                    </div>
-                `;
-            });
-
-            totalAmountElem.textContent = `$${totalAmount.toFixed(2)}`;
-            return totalAmount; // Return the calculated total amount
-        } catch (error) {
-            console.error('Error fetching cart items:', error);
-            alert('An error occurred while fetching cart items.');
-        }
-    }
-
-    async function togglePaypalBtn() {
-        const paypalContainer = document.getElementById('paypal-button-container');
-        const totalAmount = await fetchCartItems();
-
-        paypalContainer.style.display = 'block';
-
-        if (!isPaypalButtonRendered) {  // Check if button is not already rendered
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: totalAmount.toFixed(2)
-                            }
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        alert('Payment Completed, Thank you ' + details.payer.name.given_name);
-                    });
+                // Show additional order confirmation message if orderConfirmation exists
+                if (orderConfirmation) {
+                    orderConfirmation.style.display = 'block';
                 }
-            }).render('#paypal-button-container'); 
-            isPaypalButtonRendered = true;  // Set the flag to true to prevent re-rendering
+
+                // Reset payment data to prevent duplicate calls
+                paymentData = null;
+            } else {
+                throw new Error("Order creation failed"); // If orderId is not returned, handle it as failure
+            }
+        } catch (error) {
+            console.error('Error creating order:', error);
+            alert('Failed to create order: ' + error.message); // Provide specific error message
+        } finally {
+            // Re-enable the "OK" button after processing
+            document.getElementById('okButton').disabled = false;
         }
     }
+});
+
+
+// Function to create an order after payment is approved
+// Function to create an order after payment is approved
+async function createOrder(userId) {
+    const response = await fetch(`https://localhost:44395/api/Order/CreateOrder?userId=${userId}`, {
+        method: 'POST',
+    });
+
+    if (!response.ok) {
+        console.error('Error creating order:', response.statusText);
+        throw new Error('Failed to create order');
+    }
+
+    const orderId = await response.json();
+    if (orderId) {
+        localStorage.setItem('orderId', orderId);
+        console.log('Order created with OrderID:', orderId);
+    } else {
+        throw new Error('Order ID not returned from the server');
+    }
+
+    return orderId;
+}
+
+
+
+// Function to display PayPal button and handle payment
+async function togglePaypalBtn() {
+    const paypalContainer = document.getElementById('paypal-button-container');
+    const totalAmount = await fetchCartItems();  // Fetch total amount from cart
+
+    if (!totalAmount) {
+        alert("Unable to fetch total amount. Please try again.");
+        return;
+    }
+
+    paypalContainer.style.display = 'block';
+
+    if (!isPaypalButtonRendered) {  // Check if button is not already rendered
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: totalAmount.toFixed(2)  // Use fetched total amount
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    // Show custom success modal
+                    document.getElementById('successModal').style.display = 'flex';
+                    document.getElementById('payerName').textContent = details.payer.name.given_name;
+
+                    // Store payment data for creating an order
+                    paymentData = {
+                        paymentMethod: 'PayPal',
+                        totalPrice: totalAmount.toFixed(2),
+                        orderDate: new Date().toISOString(),
+                        userId: localStorage.getItem('userId'),
+                        orderId: details.orderID
+                    };
+                });
+            }
+        }).render('#paypal-button-container'); 
+        isPaypalButtonRendered = true;  // Set the flag to true to prevent re-rendering
+    }
+}
+
+// Initialize PayPal button on page load
+document.addEventListener('DOMContentLoaded', togglePaypalBtn);
+
+
 </script>
 
 <!--Cash on delivery-->

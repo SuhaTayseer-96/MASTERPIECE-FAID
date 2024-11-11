@@ -191,7 +191,9 @@
 <!-- Orders Section -->
 <div class="card p-4 section d-none" id="orders">
     <h4 class="mb-4">Your Orders</h4>
-    <p>List of your recent orders will be displayed here...</p>
+    <div id="ordersList">
+        <!-- Orders will be dynamically inserted here -->
+    </div>
 </div>
             <!-- Menu Section -->
             <div class="card p-4 section d-none" id="menu">
@@ -203,7 +205,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Item</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
                             <th scope="col">Price</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -423,7 +425,7 @@ async function fetchMenuItems() {
             const menuItemRow = `
                 <tr>
                     <td>${item.foodName}</td>
-                    <td>${item.description}</td>
+                    <td>${item.quantity}</td>
                     <td>$${item.price.toFixed(2)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="editMenuItem(${item.menuId})">Edit</button>
@@ -496,44 +498,86 @@ window.onload = fetchRestaurantData;
 
 
     </script>
+<script>
+  function getRestaurantId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('restaurantId') || 1; // Default to 1 for testing
+        }
 
+        // Function to fetch orders and display them
+        async function fetchOrders() {
+            const restaurantId = getRestaurantId();
+            if (!restaurantId) {
+                document.getElementById("ordersList").innerHTML = "<p>Restaurant ID is missing.</p>";
+                document.getElementById("orders").classList.remove("d-none");
+                return;
+            }
+
+            const apiUrl = `https://localhost:44395/api/Restaurant/orders/${restaurantId}`;
+            console.log(`Fetching orders from: ${apiUrl}`);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch orders: ${response.status} ${response.statusText}`);
+                }
+
+                const orders = await response.json();
+
+                if (!Array.isArray(orders)) {
+                    throw new Error('Invalid response format');
+                }
+
+                if (orders.length === 0) {
+                    document.getElementById("ordersList").innerHTML = "<p>No orders found for this restaurant.</p>";
+                } else {
+                    displayOrders(orders);
+                }
+
+                document.getElementById("orders").classList.remove("d-none");
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                document.getElementById("ordersList").innerHTML = "<p>Error loading orders. Please try again later.</p>";
+            }
+        }
+
+        // Function to display orders in the HTML
+        function displayOrders(orders) {
+            const ordersList = document.getElementById("ordersList");
+            ordersList.innerHTML = ""; // Clear any existing content
+
+            orders.forEach(order => {
+                const orderElement = document.createElement("div");
+                orderElement.classList.add("order-item", "mb-3");
+
+                orderElement.innerHTML = `
+                    <h5>Order ID: ${order.orderID}</h5>
+                    <p><strong>Food Name:</strong> ${order.foodName}</p>
+                    <p><strong>Quantity:</strong> ${order.quantity}</p>
+                    <p><strong>Total Price:</strong> $${order.totalPrice.toFixed(2)}</p>
+                    <p><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                    <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                    <p><strong>User Name:</strong> ${order.userName}</p>
+                    <hr>
+                `;
+
+                ordersList.appendChild(orderElement);
+            });
+        }
+
+        // Call the function to fetch and display orders when the page loads
+        window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
     <!--Join us ////////////////-->
     <script src="js/auth.js"></script>
 
-    <!-- <script>
-
-
-        var authButton = document.getElementById("authButton");
-        var profileButton = document.getElementById("profileButton");
-    
-        function checkLoginStatus() {
-            var userId = localStorage.getItem('userId');
-            if (userId) {
-                authButton.innerText = "Logout";
-                authButton.href = "#"; // 
-                authButton.addEventListener('click', logout); //
-    
-                profileButton.style.display = "inline-block";
-            } else {
-                authButton.innerText = "Join Us";
-                authButton.href = "login.html"; // 
-    
-                profileButton.style.display = "none";
-            }
-        }
-    
-        function logout() {
-            localStorage.removeItem('userId');
-            alert("Logged out Successfully");
-    
-            window.location.href = "index.html";
-        }
-    
-        document.addEventListener('DOMContentLoaded', checkLoginStatus);
-    
-            </script> -->
 </body>
 
 </html>
