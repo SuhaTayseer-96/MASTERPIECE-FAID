@@ -141,9 +141,14 @@
                 <form onsubmit="registerUser(event)">
                     <!-- Username/Email -->
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username or Email Address *</label>
+                        <label for="username1" class="form-label">UserName *</label>
+                        <input type="text" class="form-control" id="username1" placeholder="Enter your name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Email Address *</label>
                         <input type="email" class="form-control" id="username" placeholder="Enter your email" value="ss@user.com" required>
                     </div>
+                    
                     <!-- Password -->
                     <div class="mb-3">
                         <label for="password" class="form-label">Password *</label>
@@ -363,9 +368,10 @@
     
 <script>
 function registerUser(event) {
-    event.preventDefault();  // Prevent the default form submission
+    event.preventDefault(); 
 
-    const username = document.getElementById('username').value;
+    const userName = document.getElementById('username1').value;  
+    const email = document.getElementById('username').value;     
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const termsChecked = document.getElementById('remember').checked;
@@ -381,8 +387,9 @@ function registerUser(event) {
     }
 
     const userData = {
-        Email: username,
-        Password: password
+        UserName: userName,    
+        Email: email,        
+        Password: password    
     };
 
     fetch('https://localhost:44395/api/Users/register', {
@@ -396,7 +403,6 @@ function registerUser(event) {
         if (response.ok) {
             alert('Registration successful');
             window.location.href = 'login.html'; 
-            // Optionally clear the form or redirect the user
         } else {
             response.json().then(data => {
                 alert('Failed to register: ' + (data.message || 'Unknown error'));
@@ -408,6 +414,7 @@ function registerUser(event) {
         alert('Registration failed. Please try again.');
     });
 }
+
 </script>
 
 
