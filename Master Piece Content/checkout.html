@@ -385,8 +385,6 @@ a {
 <!-- Navbar End -->
 <br /><br /><br />
 <!-- Checkout-->
-
-
 <div class="container">
 
     <div class="row">
@@ -510,10 +508,9 @@ a {
                                         </div>
                                     </div>
                                     
-                                    <div id="cartItems"></div> <!-- Container for cart items -->
-                                    <div id="totalAmount"></div> <!-- Element where total amount will be displayed -->
+                                    <div id="cartItems"></div> 
+                                    <div id="totalAmount"></div> 
                                     <div id="paypal-button-container" style="display: none;"></div>
-                                    <!-- Cash on Delivery Form -->
                                     <div id="cashOnDeliveryForm" class="d-none">
                                         <h5>Cash on Delivery Details</h5>
                                         <form>
@@ -544,14 +541,7 @@ a {
                 <div class="col">
                     <a href="shop.html" class="btn btn-link text-muted">
                         <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
-                </div> <!-- end col -->
-                <!-- <div class="col">
-                    <div class="text-end mt-2 mt-sm-0">
-                        <button id="proceedButton" class="btn btn-success" disabled>
-                            <i class="mdi mdi-cart-outline me-1"></i> Proceed
-                        </button>
-                    </div>
-                </div> -->
+                </div> 
                 </div> <!-- end col -->
             </div>
         </div>
@@ -608,229 +598,212 @@ a {
         </div>
     </div>
     <!-- Footer End -->
-
-
-
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-
-
-
-
 <!--================================-->
 <!--address-->
 <script>
-function loadUserProfile(userId) {
-    fetch(`https://localhost:44395/api/Order/address/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                document.getElementById('userName').innerText = data.userName;  
-                document.getElementById('addressInput').innerText = data.address;  
-                document.getElementById('phoneInput').innerText = data.phone;  
-                
-                if (data.Image) {
-                    document.getElementById('userImage').src = data.Image;
+    function loadUserProfile(userId) {
+        fetch(`https://localhost:44395/api/Order/address/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById('userName').innerText = data.userName;  
+                    document.getElementById('addressInput').innerText = data.address;  
+                    document.getElementById('phoneInput').innerText = data.phone;  
+                    
+                    if (data.Image) {
+                        document.getElementById('userImage').src = data.Image;
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No user data found.',
+                        confirmButtonText: 'OK'
+                    });
                 }
-            } else {
-                console.error('No user data found');
-            }
-        })
-        .catch(error => console.error('Error fetching user profile:', error));
-}
-
-loadUserProfile(userId); 
-
-    
+            })
+            .catch(error => {
+                console.error('Error fetching user profile:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while fetching the user profile. Please try again later.',
+                    confirmButtonText: 'OK'
+                });
+            });
+    }
+    loadUserProfile(userId); 
 </script>
+
 <!--================================-->
 <!--paypal-->
 
 <script src="https://www.paypal.com/sdk/js?client-id=AYtvlnz-u4vZBgLnNIHWMpXvNTJI3HHyzmuRvJSGkZa3o3AiB7-N4Tnd4GljGTdHa4oyT3C4ZzEqjAwH&currency=USD"></script>
-<!-- <script>
-    function togglePaypalBtn() {
-        const paypalContainer = document.getElementById('paypal-button-container');
-        paypalContainer.style.display = 'block';
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '10.00' 
-                        }
-                    }]
-                });
-            },
-            
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('Payment Completed ' + details.payer.name.given_name);
-                });
-            }
-        }).render('#paypal-button-container'); 
-    }
-</script> -->
-
 <script>
 
-let isPaypalButtonRendered = false;  // Flag to track if PayPal button is already rendered
-let paymentData = null;  // Store payment data for later use
-
-// Function to fetch cart items and calculate the total amount
-async function fetchCartItems() {
-    const userId = localStorage.getItem('userId');
-    let totalAmount = 0;
-
-    try {
-        const response = await fetch(`https://localhost:44395/api/Restaurant/cartItem/${userId}`);
-        if (!response.ok) throw new Error("Failed to fetch cart items");
-        
-        const cartItems = await response.json();
-        const cartContainer = document.getElementById('cartItems');
-        const totalAmountElem = document.getElementById('totalAmount');
-        cartContainer.innerHTML = '';  // Clear existing items
-
-        cartItems.forEach(item => {
-            const itemTotal = item.price * item.quantity;
-            totalAmount += itemTotal;
-
-            cartContainer.innerHTML += `
-                <div class="cart-item d-flex justify-content-between align-items-center mb-3">
-                    <div>${item.foodName} (x${item.quantity})</div>
-                    <div>$${itemTotal.toFixed(2)}</div>
-                </div>
-            `;
-        });
-
-        totalAmountElem.textContent = `$${totalAmount.toFixed(2)}`;
-        return totalAmount;  // Return the calculated total amount
-    } catch (error) {
-        console.error('Error fetching cart items:', error);
-        alert('An error occurred while fetching cart items.');
-    }
-}
-
-// Event listener for the "OK" button in the modal
-// Event listener for the "OK" button in the modal
-document.getElementById('okButton').addEventListener('click', async function () {
-    const successModal = document.getElementById('successModal');
-    const orderConfirmation = document.getElementById('orderConfirmation');
-
-    // Hide the success modal if it exists
-    if (successModal) {
-        successModal.style.display = 'none';
-    }
-
-    // Only proceed if paymentData exists to avoid duplicate calls
-    if (paymentData) {
+    let isPaypalButtonRendered = false;  
+    let paymentData = null;  
+    
+    async function fetchCartItems() {
+        const userId = localStorage.getItem('userId');
+        let totalAmount = 0;
+    
         try {
-            // Temporarily disable the "OK" button to prevent multiple clicks
-            document.getElementById('okButton').disabled = true;
-
-            // Create order and reset payment data upon successful creation
-            const orderId = await createOrder(paymentData.userId); // Call createOrder and store the returned OrderId
-            if (orderId) {
-                alert('Order successfully created!');
-
-                // Show additional order confirmation message if orderConfirmation exists
-                if (orderConfirmation) {
-                    orderConfirmation.style.display = 'block';
-                }
-
-                // Reset payment data to prevent duplicate calls
-                paymentData = null;
-            } else {
-                throw new Error("Order creation failed"); // If orderId is not returned, handle it as failure
-            }
+            const response = await fetch(`https://localhost:44395/api/Restaurant/cartItem/${userId}`);
+            if (!response.ok) throw new Error("Failed to fetch cart items");
+            
+            const cartItems = await response.json();
+            const cartContainer = document.getElementById('cartItems');
+            const totalAmountElem = document.getElementById('totalAmount');
+            cartContainer.innerHTML = '';  
+    
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalAmount += itemTotal;
+    
+                cartContainer.innerHTML += `
+                    <div class="cart-item d-flex justify-content-between align-items-center mb-3">
+                        <div>${item.foodName} (x${item.quantity})</div>
+                        <div>$${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            });
+    
+            totalAmountElem.textContent = `$${totalAmount.toFixed(2)}`;
+            return totalAmount; 
         } catch (error) {
-            console.error('Error creating order:', error);
-            alert('Failed to create order: ' + error.message); // Provide specific error message
-        } finally {
-            // Re-enable the "OK" button after processing
-            document.getElementById('okButton').disabled = false;
+            console.error('Error fetching cart items:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while fetching cart items.',
+                confirmButtonText: 'OK'
+            });
         }
     }
-});
-
-
-// Function to create an order after payment is approved
-// Function to create an order after payment is approved
-async function createOrder(userId) {
-    const response = await fetch(`https://localhost:44395/api/Order/CreateOrder?userId=${userId}`, {
-        method: 'POST',
-    });
-
-    if (!response.ok) {
-        console.error('Error creating order:', response.statusText);
-        throw new Error('Failed to create order');
-    }
-
-    const orderId = await response.json();
-    if (orderId) {
-        localStorage.setItem('orderId', orderId);
-        console.log('Order created with OrderID:', orderId);
-    } else {
-        throw new Error('Order ID not returned from the server');
-    }
-
-    return orderId;
-}
-
-
-
-// Function to display PayPal button and handle payment
-async function togglePaypalBtn() {
-    const paypalContainer = document.getElementById('paypal-button-container');
-    const totalAmount = await fetchCartItems();  // Fetch total amount from cart
-
-    if (!totalAmount) {
-        alert("Unable to fetch total amount. Please try again.");
-        return;
-    }
-
-    paypalContainer.style.display = 'block';
-
-    if (!isPaypalButtonRendered) {  // Check if button is not already rendered
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: totalAmount.toFixed(2)  // Use fetched total amount
-                        }
-                    }]
+    
+    // Event listener for the "OK" button in the modal
+    document.getElementById('okButton').addEventListener('click', async function () {
+        const successModal = document.getElementById('successModal');
+        const orderConfirmation = document.getElementById('orderConfirmation');
+    
+        if (successModal) {
+            successModal.style.display = 'none';
+        }
+    
+        if (paymentData) {
+            try {
+                document.getElementById('okButton').disabled = true;
+    
+                const orderId = await createOrder(paymentData.userId); 
+                if (orderId) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Order successfully created!',
+                        confirmButtonText: 'OK'
+                    });
+    
+                    if (orderConfirmation) {
+                        orderConfirmation.style.display = 'block';
+                    }
+    
+                    paymentData = null;
+                } else {
+                    throw new Error("Order creation failed"); 
+                }
+            } catch (error) {
+                console.error('Error creating order:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to create order: ' + error.message,
+                    confirmButtonText: 'OK'
                 });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    // Show custom success modal
-                    document.getElementById('successModal').style.display = 'flex';
-                    document.getElementById('payerName').textContent = details.payer.name.given_name;
-
-                    // Store payment data for creating an order
-                    paymentData = {
-                        paymentMethod: 'PayPal',
-                        totalPrice: totalAmount.toFixed(2),
-                        orderDate: new Date().toISOString(),
-                        userId: localStorage.getItem('userId'),
-                        orderId: details.orderID
-                    };
-                });
+            } finally {
+                document.getElementById('okButton').disabled = false;
             }
-        }).render('#paypal-button-container'); 
-        isPaypalButtonRendered = true;  // Set the flag to true to prevent re-rendering
+        }
+    });
+    
+    // Function to create an order after payment is approved
+    async function createOrder(userId) {
+        const response = await fetch(`https://localhost:44395/api/Order/CreateOrder?userId=${userId}`, {
+            method: 'POST',
+        });
+    
+        if (!response.ok) {
+            console.error('Error creating order:', response.statusText);
+            throw new Error('Failed to create order');
+        }
+    
+        const orderId = await response.json();
+        if (orderId) {
+            localStorage.setItem('orderId', orderId);
+            console.log('Order created with OrderID:', orderId);
+        } else {
+            throw new Error('Order ID not returned from the server');
+        }
+    
+        return orderId;
     }
-}
-
-// Initialize PayPal button on page load
-document.addEventListener('DOMContentLoaded', togglePaypalBtn);
-
-
-</script>
+    
+    //paypal button
+    async function togglePaypalBtn() {
+        const paypalContainer = document.getElementById('paypal-button-container');
+        const totalAmount = await fetchCartItems();  // Fetch total amount from cart
+    
+        if (!totalAmount) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Unable to fetch total amount. Please try again.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+    
+        paypalContainer.style.display = 'block';
+    
+        if (!isPaypalButtonRendered) {  // Check if button is not already rendered
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: totalAmount.toFixed(2)  // Use fetched total amount
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Show custom success modal
+                        document.getElementById('successModal').style.display = 'flex';
+                        document.getElementById('payerName').textContent = details.payer.name.given_name;
+    
+                        // Store payment data for creating an order
+                        paymentData = {
+                            paymentMethod: 'PayPal',
+                            totalPrice: totalAmount.toFixed(2),
+                            orderDate: new Date().toISOString(),
+                            userId: localStorage.getItem('userId'),
+                            orderId: details.orderID
+                        };
+                    });
+                }
+            }).render('#paypal-button-container'); 
+            isPaypalButtonRendered = true;  // Set the flag to true to prevent re-rendering
+        }
+    }
+    
+    // Initialize PayPal button on page load
+    document.addEventListener('DOMContentLoaded', togglePaypalBtn);
+    
+    </script>
+    
 
 <!--Cash on delivery-->
 <script>
@@ -859,7 +832,6 @@ document.addEventListener('DOMContentLoaded', togglePaypalBtn);
                 document.getElementById("billing-email-address").value = data.email || "";
                 document.getElementById("billing-phone").value = data.phone || "";
                 document.getElementById("billing-address").value = data.address || "";
-                // document.getElementById("billing-city").value = data.BillingCity || "";
 
             }
         })
@@ -867,6 +839,8 @@ document.addEventListener('DOMContentLoaded', togglePaypalBtn);
 });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

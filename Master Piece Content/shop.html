@@ -96,18 +96,6 @@
         <!-- Join Us Button (Visible by default) -->
         <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
             <i class="fa fa-arrow-right ms-3"></i></a>
-
-                
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                        </div> -->
 </nav>
 <!-- Navbar End -->
 
@@ -180,50 +168,10 @@
 
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
- 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/main.js"></script>
     <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-
-    <!-- <script>
-        // Function to save interest data to localStorage
-        document.getElementById('interestForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent the form from submitting normally
-    debugger
-            // Get form values
-            const comments = document.getElementById('comments').value;
-            const pickupTime = document.getElementById('pickupTime').value;
-            const quantity = document.getElementById('quantity').value;
-    
-            // Create an object to hold the interest data
-            const interestItem = {
-                foodName: "Selected Food",  // You can change this to dynamic food name from menu
-                comments: comments,
-                pickupTime: pickupTime,
-                quantity: quantity,
-                price: 15.99  // Add a price if applicable
-            };
-    
-            // Retrieve existing cart data from localStorage or create a new one if empty
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-            // Add the interest item to the cart
-            cart.push(interestItem);
-    
-            // Save the updated cart back to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-    
-            // Redirect to cart page
-            window.location.href = 'cart.html';
-        });
-    </script> -->
-    
-    
-  
-    <!-- JavaScript Libraries -->
-
 
     <!-- Template Javascript -->
     
@@ -256,85 +204,72 @@
         }
     
         fetchRestaurantMenu();
-        async function addToCart(foodId, quantity) {
-            debugger
-    const userId = localStorage.getItem('userId');
-    const isLoggedIn = localStorage.getItem('isLoggedIn'); 
-
-    console.log("User ID:", userId);         // To check if userId is retrieved correctly
-    console.log("Is Logged In:", isLoggedIn); // To check what value isLoggedIn holds
-
-    if (userId == null) { // Make sure it's checking for the string 'true'
-        alert('You must be logged in to add items to the cart');
-        window.location.href = '/login.html';
-        return;
-    }
-
-    const cartItemDto = {
-        UserID: parseInt(userId),
-        FoodID: foodId,
-        Quantity: quantity
-    };
-
-    try {
-        const response = await fetch('https://localhost:44395/api/Restaurant/api/CartItems',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cartItemDto)
-        });
-
-        if (response.ok) {
-            alert('Item added to cart successfully');
-        } else {
-            const errorData = await response.json();
-            alert('Failed to add item to cart: ' + errorData.message);
-        }
-    } catch (error) {
-        console.error('Error adding item to cart:', error);
-        alert('An error occurred while adding item to cart');
-    }
-}
-
-    </script>
     
+        async function addToCart(foodId, quantity) {
+            const userId = localStorage.getItem('userId');
+            const isLoggedIn = localStorage.getItem('isLoggedIn'); 
+    
+            console.log("User ID:", userId);         // To check if userId is retrieved correctly
+            console.log("Is Logged In:", isLoggedIn); // To check what value isLoggedIn holds
+    
+            if (userId == null) { // Make sure it's checking for the string 'true'
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'You must be logged in to add items to the cart.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = 'login.html';
+                });
+                return;
+            }
+    
+            const cartItemDto = {
+                UserID: parseInt(userId),
+                FoodID: foodId,
+                Quantity: quantity
+            };
+    
+            try {
+                const response = await fetch('https://localhost:44395/api/Restaurant/api/CartItems',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cartItemDto)
+                });
+    
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Item Added to Cart',
+                        text: 'The item has been successfully added to your cart.',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Add Item',
+                        text: 'Failed to add item to cart: ' + errorData.message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error('Error adding item to cart:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while adding the item to the cart.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    </script>
         <!-- /////////////////////////////////////////////////// -->
     <!--Join us ////////////////-->
     <script src="js/auth.js"></script>
-
-    <!-- <script>
-
-
-        var authButton = document.getElementById("authButton");
-        var profileButton = document.getElementById("profileButton");
-    
-        function checkLoginStatus() {
-            var userId = localStorage.getItem('userId');
-            if (userId) {
-                authButton.innerText = "Logout";
-                authButton.href = "#"; // 
-                authButton.addEventListener('click', logout); //
-    
-                profileButton.style.display = "inline-block";
-            } else {
-                authButton.innerText = "Join Us";
-                authButton.href = "login.html"; // 
-    
-                profileButton.style.display = "none";
-            }
-        }
-    
-        function logout() {
-            localStorage.removeItem('userId');
-            alert("Logged out Successfully");
-    
-            window.location.href = "index.html";
-        }
-    
-        document.addEventListener('DOMContentLoaded', checkLoginStatus);
-    
-            </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

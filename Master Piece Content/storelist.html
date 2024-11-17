@@ -179,7 +179,7 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <script src="js/auth.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -195,43 +195,11 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
   <!--Join us ////////////////-->
-  <script>
 
-
-    var authButton = document.getElementById("authButton");
-    var profileButton = document.getElementById("profileButton");
-
-    function checkLoginStatus() {
-        var userId = localStorage.getItem('userId');
-        if (userId) {
-            authButton.innerText = "Logout";
-            authButton.href = "#"; // 
-            authButton.addEventListener('click', logout); //
-
-            profileButton.style.display = "inline-block";
-        } else {
-            authButton.innerText = "Join Us";
-            authButton.href = "login.html"; // 
-
-            profileButton.style.display = "none";
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('userId');
-        alert("Logged in Successfully");
-
-        window.location.href = "index.html";
-    }
-
-    document.addEventListener('DOMContentLoaded', checkLoginStatus);
-
-        </script>
 
 <script>
     // Function to fetch and display restaurants
     async function fetchRestaurants() {
-        debugger;
         const response = await fetch('https://localhost:44395/api/Restaurant/getAllRestaurant');
         const restaurants = await response.json();
         
@@ -250,7 +218,7 @@
                     <p><strong>Address:</strong><br>${restaurant.address}</p>
                     <p><strong>Information:</strong><br>${restaurant.contactInfo}</p>
                     <p><strong>Food Type:</strong><br>${restaurant.foodType}</p>
-                    <button type="button" onclick="goToRestaurantMenu(${restaurant.restaurantId})">More Details</button>
+                    <button type="button" onclick="goToRestaurantMenu(${restaurant.restaurantId})" style="background-color: #348E38; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">More Details</button>
                 </div>
             `;
             restaurantList.appendChild(card);
@@ -259,7 +227,6 @@
     
     // Function to redirect to the restaurant's menu page
     function goToRestaurantMenu(restaurantId) {
-        debugger;
         localStorage.setItem('restaurant', restaurantId);
         window.location.href = 'Shop.html';
     }
@@ -273,38 +240,6 @@
 </script>
 
     <!--Join us ////////////////-->
-    <script>
-
-
-        var authButton = document.getElementById("authButton");
-        var profileButton = document.getElementById("profileButton");
-    
-        function checkLoginStatus() {
-            var userId = localStorage.getItem('userId');
-            if (userId) {
-                authButton.innerText = "Logout";
-                authButton.href = "#"; // 
-                authButton.addEventListener('click', logout); //
-    
-                profileButton.style.display = "inline-block";
-            } else {
-                authButton.innerText = "Join Us";
-                authButton.href = "login.html"; // 
-    
-                profileButton.style.display = "none";
-            }
-        }
-    
-        function logout() {
-            localStorage.removeItem('userId');
-            alert("Logged out Successfully");
-    
-            window.location.href = "index.html";
-        }
-    
-        document.addEventListener('DOMContentLoaded', checkLoginStatus);
-    
-            </script>
 </body>
 
 </html>

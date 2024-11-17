@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Faid")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a9379d9a8057e2f3f5e906578ae68ca1da96bcae")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+caadf443c8063c2df776cddda54d865b2f49727d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Faid")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Faid")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

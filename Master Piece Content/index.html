@@ -100,17 +100,6 @@
         <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
             <i class="fa fa-arrow-right ms-3"></i></a>
 
-                
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                </div> -->
 </nav>
 
     <!-- Navbar End -->
@@ -296,30 +285,6 @@
           <h3>Available for a Limited Time!</h3>
           <h2>Don’t miss out on today's special meal offering. Freshly prepared and available to you for a limited time.
           </h2>
-          <!-- <h3><span class="price">$10</span> <span class="text-muted">now $5 only</span></h3> -->
-          <!-- <h3>Best Price For You</h3>
-          <h2>Available for a Limited Time!</h2>
-          <p>Don’t miss out on today's special meal offering. Freshly prepared and available to you for a limited time.
-          </p> -->
-          <!-- Countdown Timer -->
-          <!-- <div class="deal-timer"> -->
-            <!-- <div>
-              <span class="number" id="days">0</span>
-              <span class="label">Days</span>
-            </div> -->
-            <!-- <div>
-              <span class="number" id="hours">0</span>
-              <span class="label">Hours</span>
-            </div> -->
-            <!-- <div>f
-              <span class="number" id="minutes">0</span>
-              <span class="label">Minutes</span>
-            </div> -->
-            <!-- <div>
-              <span class="number" id="seconds">0</span>
-              <span class="label">Seconds</span>
-            </div>
-          </div> -->
           
           <a href="storelist.html" class="btn btn-success py-3 px-5" type="button">Shop Now</a>
         </div>
@@ -476,37 +441,6 @@
 </div>
     <!-- blogs End -->
 
-
-    <!-- Testimonial Start -->
-    <!-- <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.1s">
-                    <p class="fs-5 fw-bold text-primary">Testimonial</p>
-                    <h1 class="display-5 mb-5">What Our Clients Say About Us!</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit sed stet lorem sit clita duo justo.</p>
-                    <a class="btn btn-primary py-3 px-4" href="">See More</a>
-                </div>
-                <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="owl-carousel testimonial-carousel">
-                        <div class="testimonial-item">
-                            <img class="img-fluid rounded mb-3" src="img/testimonial-1.jpg" alt="">
-                            <p class="fs-5">Dolores sed duo clita tempor justo dolor et stet lorem kasd labore dolore lorem ipsum. At lorem lorem magna ut et, nonumy et labore et tempor diam tempor erat.</p>
-                            <h4>Client Name</h4>
-                            <span>Profession</span>
-                        </div>
-                        <div class="testimonial-item">
-                            <img class="img-fluid rounded mb-3" src="img/testimonial-2.jpg" alt="">
-                            <p class="fs-5">Dolores sed duo clita tempor justo dolor et stet lorem kasd labore dolore lorem ipsum. At lorem lorem magna ut et, nonumy et labore et tempor diam tempor erat.</p>
-                            <h4>Client Name</h4>
-                            <span>Profession</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Testimonial End -->
 <br> <br>
 <section>
 <!-- Partners Section Start -->
@@ -612,115 +546,9 @@
         </div>
     </div>
     <!-- Footer End -->
-
-
-    <!-- Copyright Start -->
-    <!-- <div class="container-fluid copyright py-4">
-        <div class="container">
-            <div class="row">
-                <div style="text-align: center;" class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="" href="#" >FAID</a>, All Right Reserved.
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Copyright End -->
-
-
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
-    <!--Join us ////////////////-->
-    <!-- <script>
-
-
-        var authButton = document.getElementById("authButton");
-        var profileButton = document.getElementById("profileButton");
-    
-        function checkLoginStatus() {
-            var userId = localStorage.getItem('userId');
-            if (userId) {
-                authButton.innerText = "Logout";
-
-                authButton.href = "#"; // 
-                authButton.addEventListener('click', logout); //
-    
-                profileButton.style.display = "inline-block";
-            } else {
-                authButton.innerText = "Join Us";
-                authButton.href = "login.html"; // 
-    
-                profileButton.style.display = "none";
-            }
-        }
-    
-        function logout() {
-            localStorage.removeItem('userId');
-            alert("Logged out Successfully");
-    
-            window.location.href = "index.html";
-        }
-    
-        document.addEventListener('DOMContentLoaded', checkLoginStatus);
-    
-            </script> -->
-
-            <script>
-                var authButton = document.getElementById("authButton");
-                var profileLink1 = document.getElementById("profileLink1");
-                var profileLink2 = document.getElementById("profileLink2");
-                var cartLink = document.getElementById("cartLink");
-            
-                function checkLoginStatus() {
-                    var userId = localStorage.getItem('userId');
-                    var userEmail = localStorage.getItem('userEmail'); // Assume the email is stored in localStorage
-                    
-                    if (userId) {
-                        authButton.innerText = "Logout";
-                        authButton.href = "#"; 
-                        authButton.addEventListener('click', logout); 
-            
-                        // Show the appropriate profile link based on the user's email
-                        if (userEmail === "suha@user.com") {
-                            profileLink1.style.display = "inline-block"; // Show for specific email
-                        } else if (userEmail === "spoonpalace@rest.com") {
-                            profileLink2.style.display = "inline-block"; // Show for another email
-                        }
-            
-                        cartLink.style.display = "inline-block"; // Always show cart link
-                        profileLink1.style.display="inline-block";
-                        profileLink1.style.display="inline-block";
-
-
-//                         if (userEmail === "s@admin.com") { 
-//     window.location.href = "/admin/html.phoenixcoded.net/light-able/bootstrap/application/account-profile.html";
-// }
-
-                    } else {
-                        authButton.innerText = "Join Us";
-                        authButton.href = "login.html"; 
-            
-                        // Hide profile links and cart link
-                        profileLink1.style.display = "none";
-                        profileLink2.style.display = "none";
-                        cartLink.style.display = "none";
-                    }
-                }
-            
-                function logout() {
-                    localStorage.removeItem('userId');
-                    localStorage.removeItem('userEmail'); // Remove the email from localStorage as well
-                    alert("Logged out Successfully");
-                    window.location.href = "index.html";
-                }
-            
-                document.addEventListener('DOMContentLoaded', checkLoginStatus);
-            </script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -804,24 +632,15 @@ async function fetchNewsPosts() {
         </div>
     </div>
 `;
-
             newsContainer.insertAdjacentHTML('beforeend', postHtml);
         });
     } catch (error) {
         console.error('Error fetching news posts:', error);
     }
 }
-
-// Call the function to fetch news posts when the page loads
 document.addEventListener('DOMContentLoaded', fetchNewsPosts);
-
 </script>
 
-
-<!--Partners-->
-<!-- <script>
-
-</script> -->
 
 <script src="js/auth.js"></script>
 </body>

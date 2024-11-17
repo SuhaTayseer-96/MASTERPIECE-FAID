@@ -91,18 +91,6 @@
             <!-- Join Us Button (Visible by default) -->
             <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
                 <i class="fa fa-arrow-right ms-3"></i></a>
-
-                
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                        </div> -->
 </nav>
 <!-- Navbar End -->
 
@@ -335,7 +323,6 @@
     </div>
 </div>
 </div>
-
         <!-- Service Section End -->
     
         <!-- Footer -->
@@ -399,11 +386,10 @@
 <!-- Scripts -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
-// <!--Collection form-->
+    // <!--Collection form-->
     document.getElementById("foodCollectionForm").addEventListener("submit", async function(event) {
-        debugger
         event.preventDefault(); 
-
+    
         const formData = new FormData();
         formData.append("Name", document.getElementById("name").value);
         formData.append("Email", document.getElementById("email").value);
@@ -412,24 +398,45 @@
         formData.append("FoodType", document.getElementById("foodType").value);
         formData.append("PreferredPickupDate", document.getElementById("pickupDate").value);
         formData.append("PreferredPickupTime", document.getElementById("pickupTime").value);
-
-        const response = await fetch("https://localhost:44395/api/ServicesRequestsForms/api/PostFoodCol", {
-            method: "POST",
-            body: formData
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            alert("Form submitted successfully!");
-            console.log("Success:", data);
-        } else {
-            alert(`Error: ${response.status} - ${response.statusText}`);
+    
+        try {
+            const response = await fetch("https://localhost:44395/api/ServicesRequestsForms/api/PostFoodCol", {
+                method: "POST",
+                body: formData
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                // Success message with SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Form Submitted Successfully!',
+                    text: 'Your food collection request has been submitted.',
+                    confirmButtonText: 'OK'
+                });
+                console.log("Success:", data);
+            } else {
+                const errorData = await response.json();
+                // Error message with SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: `Error: ${response.status} - ${errorData.message || response.statusText}`,
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            // Catching any network errors
+            console.error('Error during form submission:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Error',
+                text: 'An unexpected error occurred. Please try again later.',
+                confirmButtonText: 'OK'
+            });
         }
     });
-</script>
-
-
-
+    </script>
 
 <!--distributionform-->
 <script>
@@ -456,20 +463,36 @@
 
             if (response.ok) {
                 const data = await response.json();
-                // Handle success
-                alert("Request submitted successfully!");
+                // Success: Use SweetAlert for a user-friendly notification
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Request Submitted Successfully!',
+                    text: 'Your distribution request has been sent to the system.',
+                    confirmButtonText: 'OK'
+                });
                 console.log("Success:", data);
             } else {
-                // Handle errors (non-200 responses)
-                alert("There was an error with the submission.");
+                // Error: Use SweetAlert for a user-friendly error notification
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: 'There was an error with the submission. Please try again later.',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
-            // Handle network or unexpected errors
+            // Catching network or unexpected errors
             console.error("Error:", error);
-            alert("A network error occurred.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Network Error',
+                text: 'A network error occurred. Please check your connection and try again.',
+                confirmButtonText: 'OK'
+            });
         }
     });
 </script>
+
 <!--distributionform-->
 
 <!--partnerform-->
@@ -494,22 +517,37 @@
 
             if (response.ok) {
                 const data = await response.json();
-                // Handle success
-                alert("Partnership request submitted successfully!");
+                // Success: Use SweetAlert to show a success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Request Submitted Successfully!',
+                    text: 'Your partnership request has been submitted successfully.',
+                    confirmButtonText: 'OK'
+                });
                 console.log("Success:", data);
             } else {
-                // Handle errors (non-200 responses)
-                alert("There was an error with the submission.");
+                // Error: Use SweetAlert to show an error message for unsuccessful submission
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: 'There was an error with the submission. Please try again later.',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
-            // Handle network or unexpected errors
+            // Catching network or unexpected errors
             console.error("Error:", error);
-            alert("A network error occurred.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Network Error',
+                text: 'A network error occurred. Please check your connection and try again.',
+                confirmButtonText: 'OK'
+            });
         }
     });
 </script>
 
-    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

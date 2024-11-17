@@ -3,6 +3,7 @@ var authButton = document.getElementById("authButton");
 var profileLink1 = document.getElementById("profileLink1");
 var profileLink2 = document.getElementById("profileLink2");
 var cartLink = document.getElementById("cartLink");
+var storelistLink = document.getElementById("storelistLink");
 
 function checkLoginStatus() {
     debugger;
@@ -14,9 +15,6 @@ function checkLoginStatus() {
         authButton.href = "#"; 
         authButton.addEventListener('click', logout); 
 
-        debugger;
-
-        // Admin check
         if (userEmail === "s@admin.com") {
             window.location.href = "admin/html.phoenixcoded.net/light-able/bootstrap/application/account-profile.html";
             return;
@@ -28,6 +26,8 @@ function checkLoginStatus() {
         } else if (userEmail && userEmail.endsWith("@rest.com")) {
             profileLink2.style.display = "inline-block"; 
             profileLink1.style.display = "none";
+            cartLink.style.display = "none";
+            storelistLink.style.display = "none";
         }
     } else {
         authButton.innerText = "Join Us";
@@ -42,9 +42,19 @@ function checkLoginStatus() {
 function logout() {
     localStorage.removeItem('userId');
     localStorage.removeItem('email'); 
-    alert("Are you sure you want to log out?");
-    window.location.href = "index.html";
-}
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You will be logged out of your account.",
+        icon: 'warning',
+})
+   .then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "index.html";
+        }
+    });
+};
 
 document.addEventListener('DOMContentLoaded', checkLoginStatus);
 checkLoginStatus();
+
+

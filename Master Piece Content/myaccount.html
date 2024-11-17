@@ -10,6 +10,7 @@
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,10 +28,13 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 </head>
+<style>
+
+</style>
 
 <body>
     <!-- Spinner Start -->
@@ -93,18 +97,6 @@
         <!-- Join Us Button (Visible by default) -->
         <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
             <i class="fa fa-arrow-right ms-3"></i></a>
-
-                
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                        </div> -->
 </nav>
 <!-- Navbar End -->
 
@@ -126,7 +118,6 @@
 
     <div class="container py-5">
         <div class="row">
-            <!-- Left Panel: Profile Sidebar -->
             <div class="col-md-4">
                 <div class="card p-3">
                     <div class="text-center">
@@ -272,11 +263,6 @@
         </div>
     </div>
     <!-- Footer End -->
-
-
-
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
 
@@ -323,7 +309,7 @@
     </script>
 <!--=====================================================-->
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/main.js"></script>
 
 
@@ -345,7 +331,13 @@
         
                 // Check if the new password and confirm password match
                 if (newPassword !== confirmPassword) {
-                    alert('New password and confirm password do not match.');
+                    // SweetAlert for password mismatch
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Password Mismatch',
+                        text: 'New password and confirm password do not match.',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
         
@@ -364,16 +356,34 @@
                     });
         
                     if (response.ok) {
-                        alert('Password updated successfully!');
+                        // SweetAlert for successful password update
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Password updated successfully.',
+                            confirmButtonText: 'OK'
+                        });
                     } else {
-                        alert('Failed to update password.');
+                        // SweetAlert for failed password update
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed!',
+                            text: 'Failed to update password.',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 } catch (error) {
                     console.error('Error updating password:', error);
+                    // SweetAlert for network or unexpected errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while updating your password. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
                 }
             }
-        </script>
-
+        </script>        
         <script src="js/auth.js"></script>
 
 <!--order-->
@@ -408,13 +418,23 @@
                     // Show the orders section after fetching orders
                     document.getElementById('ordersSection').classList.remove('d-none');
                 })
-                .catch(error => console.error('Error fetching orders:', error));
+                .catch(error => {
+                    console.error('Error fetching orders:', error);
+                    // Show an error message using SweetAlert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'There was an error fetching your orders. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                });
         } else {
             // Show the selected section
             document.getElementById(section).classList.remove('d-none');
         }
     }
-    </script>
+</script>
+
 
     <!--address-->
 

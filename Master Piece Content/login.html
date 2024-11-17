@@ -92,18 +92,6 @@
         <!-- Join Us Button (Visible by default) -->
         <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
             <i class="fa fa-arrow-right ms-3"></i></a>
-
-                
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                        </div> -->
 </nav>
 
 
@@ -229,126 +217,69 @@
     <!-- Footer End -->
 
 
-
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
     
     
     
-    <!--////////////////////////////////////////////////////////////////////-->
-    <!-- <script>
-
-        debugger
-        document.addEventListener('DOMContentLoaded', async function() {
-            const loginForm = document.getElementById('loginForm');
-            const Url = 'https://localhost:44395/api/Users/login'
-            loginForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-        
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-        
-                // Use fetch to send data to the server
-                fetch(Url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: username, password: password })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Store the user ID from the server response in local storage
-                        localStorage.setItem('userId', data.userId);
-                        window.location.href = 'home.html';
-                    } else {
-                        alert('Invalid login credentials.');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            });
-        });
-        </script>
-         -->
-        
+    <!--////////////////////////////////////////////////////////////////////-->       
          <script>
             var url = "https://localhost:44395/api/Users/login";
-var form = document.getElementById("loginForm");
-
-async function login() {
-    event.preventDefault(); 
-    debugger
-
-    var data = new FormData(form); // 
-
-    try {
-        var response = await fetch(url, {
-            method: "POST",
-            body: data
-        });
-
-        if (response.ok) {
-
-            var result = await response.json();
-
-            localStorage.setItem('userId', result.userId);
-            localStorage.setItem('email', result.email);
-
-
-            alert("Login successful");
-
-
-            window.location.href = "index.html";
-        } else {
-            var errorMessage = await response.text(); 
-            alert("error: " + errorMessage); 
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert("server error");
-    }
-}
-         </script>
-
-
-<!--///////////////////join uss /////////////////-->
-<!-- <script>
-
-
-    var authButton = document.getElementById("authButton");
-    var profileButton = document.getElementById("profileButton");
-
-    function checkLoginStatus() {
-        var userId = localStorage.getItem('userId');
-        if (userId) {
-            authButton.innerText = "Logout";
-            authButton.href = "#"; // 
-            authButton.addEventListener('click', logout); //
-
-            profileButton.style.display = "inline-block";
-        } else {
-            authButton.innerText = "Join Us";
-            authButton.href = "login.html"; // 
-
-            profileButton.style.display = "none";
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('userId');
-        alert("Logged in Successfully");
-
-        window.location.href = "index.html";
-    }
-
-    document.addEventListener('DOMContentLoaded', checkLoginStatus);
-
-        </script> -->
+            var form = document.getElementById("loginForm");
+            
+            async function login() {
+                event.preventDefault(); 
+                debugger
+            
+                var data = new FormData(form); 
+            
+                try {
+                    var response = await fetch(url, {
+                        method: "POST",
+                        body: data
+                    });
+            
+                    if (response.ok) {
+            
+                        var result = await response.json();
+            
+                        localStorage.setItem('userId', result.userId);
+                        localStorage.setItem('email', result.email);
+            
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Welcome back!',
+                            confirmButtonText: 'OK'
+                        });
+            
+                        // Redirect right after showing the alert
+                        setTimeout(() => {
+                            window.location.href = "index.html";
+                        }, 1500); // Delay of 1.5 seconds for the user to see the alert
+            
+                    } else {
+                        var errorMessage = await response.text(); 
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: `Error: ${errorMessage}`,
+                            confirmButtonText: 'Try Again'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'Something went wrong. Please try again later.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+            </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="js/auth.js"></script>
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>

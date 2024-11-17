@@ -130,16 +130,6 @@
         <a href="login.html" id="authButton" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Join us
             <i class="fa fa-arrow-right ms-3"></i></a>
                 
-                <!-- <div id="joinUsPopup" class="login-popup">
-                    <a href="login.html" class="button-main w-full text-center">Login</a>
-                    <div class="text-secondary text-center mt-2 pb-3" style="font-size: large;">
-                        Don’t have an account?
-                        <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
-                    </div>
-                    <div class="bottom pt-3 border-t border-line"></div>
-                    <a href="#!" class="body1 hover:underline">Support</a>
-                    </div>
-                        </div> -->
 </nav>
 <!-- Navbar End -->
 
@@ -294,38 +284,7 @@
 
 
         <!--Join us ////////////////-->
-        <!-- <script>
 
-
-            var authButton = document.getElementById("authButton");
-            var profileButton = document.getElementById("profileButton");
-        
-            function checkLoginStatus() {
-                var userId = localStorage.getItem('userId');
-                if (userId) {
-                    authButton.innerText = "Logout";
-                    authButton.href = "#"; // 
-                    authButton.addEventListener('click', logout); //
-        
-                    profileButton.style.display = "inline-block";
-                } else {
-                    authButton.innerText = "Join Us";
-                    authButton.href = "login.html"; // 
-        
-                    profileButton.style.display = "none";
-                }
-            }
-        
-            function logout() {
-                localStorage.removeItem('userId');
-                alert("Logged out Successfully");
-        
-                window.location.href = "index.html";
-            }
-        
-            document.addEventListener('DOMContentLoaded', checkLoginStatus);
-        
-                </script> -->
                 <script src="js/auth.js"></script>
 
 
