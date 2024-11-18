@@ -739,7 +739,6 @@
                       <th>Name</th>
                       <th>Email</th>
                       <th>Date Joined</th>
-                      <th>Actions</th>
                   </tr>
               </thead>
               <tbody>
@@ -999,10 +998,6 @@
                         <td>${user.userName}</td>
                         <td><a href="mailto:${user.email}">${user.email}</a></td>
                         <td>${user.dateJoined}</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm">Accept</button>
-                            <button class="btn btn-outline-secondary btn-sm ms-1">Reject</button>
-                        </td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;

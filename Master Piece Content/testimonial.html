@@ -243,6 +243,263 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            async function fetchRestaurantProfile() {
+                const restaurantId = 4; // Replace with dynamic restaurant ID if needed
+    
+                try {
+                    const response = await fetch(`https://localhost:44395/api/Restaurants/GetRestaurantProfile?restaurantId=${restaurantId}`);
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                    }
+    
+                    const restaurant = await response.json();
+    
+                    // Update the HTML elements with the restaurant data
+                    document.getElementById('restaurantName').textContent = restaurant.name || 'No name available';
+                    document.getElementById('restaurantEmail').textContent = restaurant.email || 'No email available';
+                    document.getElementById('restaurantImage').src = restaurant.profileImage || '../img/default-restaurant.jpg';
+                } catch (error) {
+                    console.error('Error fetching restaurant profile:', error);
+                }
+            }
+    
+            // Call the function to fetch and display the restaurant profile
+            fetchRestaurantProfile();
+        });
+    </script>
+    
+    <!--======================================================-->
+        <script>
+    
+    // Function to show a specific section
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => section.classList.add('d-none')); // Hide all sections
+        document.getElementById(sectionId).classList.remove('d-none'); // Show the selected section
+    }
+    
+    // Function to fetch restaurant data
+    async function fetchRestaurantData() {
+        const restaurantId = 1; // Replace with the logged-in restaurant's ID
+        
+        try {
+            const response = await fetch(`https://localhost:44395/api/Restaurant/${restaurantId}`);
+            const restaurant = await response.json();
+    
+            // Populate the profile fields with restaurant data
+            document.getElementById('restaurantImage').src = restaurant.image;
+            document.getElementById('restaurantName').innerText = restaurant.name;
+            document.getElementById('restaurantEmail').innerText = restaurant.email;
+    
+            // Populate the form inputs with restaurant data
+            document.getElementById('restaurantNameInput').value = restaurant.name;
+            document.getElementById('ownerNameInput').value = restaurant.ownerName;
+            document.getElementById('restaurantEmailInput').value = restaurant.email;
+            document.getElementById('phoneInput').value = restaurant.phoneNo;
+            document.getElementById('addressInput').value = restaurant.address;
+            document.getElementById('foodTypeInput').value = restaurant.foodType;
+    
+            // Fetch the restaurant's menu items
+            fetchMenuItems();
+        } catch (error) {
+            console.error('Error fetching restaurant data:', error);
+        }
+    }
+    
+    async function updateRestaurantProfile() {
+        const restaurantId = 1; 
+    
+        const formData = new FormData();
+        formData.append('name', document.getElementById('restaurantNameInput').value);
+        formData.append('ownerName', document.getElementById('ownerNameInput').value);
+        formData.append('email', document.getElementById('restaurantEmailInput').value);
+        formData.append('phoneNo', document.getElementById('phoneInput').value);
+        formData.append('address', document.getElementById('addressInput').value);
+        formData.append('foodType', document.getElementById('foodTypeInput').value);
+    
+        const imageInput = document.getElementById('restaurantImageInput');
+        if (imageInput.files.length > 0) {
+            formData.append('image', imageInput.files[0]); 
+        }
+    
+        try {
+            const response = await fetch(`https://localhost:44395/api/Restaurant/${restaurantId}`, {
+                method: 'PUT',
+                body: formData 
+            });
+    
+            if (response.ok) {
+                alert('Profile updated successfully!');
+                fetchRestaurantData(); 
+            } else {
+                alert('Failed to update profile.');
+            }
+        } catch (error) {
+            console.error('Error updating restaurant profile:', error);
+        }
+    }
+    
+    async function fetchMenuItems() {
+        const restaurantId = 1; // Replace with actual restaurant ID
+        try {
+            const response = await fetch(`https://localhost:44395/api/Restaurant/${restaurantId}/menu`);
+            const menuItems = await response.json();
+    
+            const menuItemsContainer = document.getElementById('menuItems');
+            menuItemsContainer.innerHTML = ''; // Clear previous content
+    
+            menuItems.forEach(item => {
+                const menuItemRow = `
+                    <tr>
+                        <td>${item.foodName}</td>
+                        <td>${item.quantity}</td>
+                        <td>$${item.price.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editMenuItem(${item.menuId})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMenuItem(${item.menuId})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                menuItemsContainer.innerHTML += menuItemRow;
+            });
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+        }
+    }
+    
+    // Handle adding a new menu item with an image
+    document.getElementById('addMenuItemForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const restaurantId = 1; // Replace with actual restaurant ID
+    
+        // Create a new FormData object to handle text and image uploads
+        const formData = new FormData();
+        formData.append('foodName', document.getElementById('foodName').value);
+        formData.append('description', document.getElementById('foodDescription').value);
+        formData.append('price', parseFloat(document.getElementById('foodPrice').value));
+    
+        // If an image is selected for the menu item, append it to the form data
+        const menuItemImageInput = document.getElementById('menuItemImage');
+        if (menuItemImageInput.files.length > 0) {
+            formData.append('image', menuItemImageInput.files[0]); // append image file
+        }
+    
+        try {
+            const response = await fetch(`https://localhost:44395/api/Restaurant/${restaurantId}/menu`, {
+                method: 'POST',
+                body: formData // Send the form data (text + image)
+            });
+    
+            if (response.ok) {
+                alert('Menu item added successfully!');
+                fetchMenuItems(); // Refresh the menu list
+            } else {
+                alert('Failed to add menu item.');
+            }
+        } catch (error) {
+            console.error('Error adding menu item:', error);
+        }
+    });
+    
+    // Handle deleting a menu item
+    async function deleteMenuItem(menuId) {
+        const restaurantId = 1; // Replace with actual restaurant ID
+        try {
+            const response = await fetch(`https://localhost:44395/api/Restaurant/${restaurantId}/menu/${menuId}`, {
+                method: 'DELETE',
+            });
+    
+            if (response.ok) {
+                alert('Menu item deleted successfully!');
+                fetchMenuItems(); // Refresh the menu list
+            } else {
+                alert('Failed to delete menu item.');
+            }
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+        }
+    }
+    
+    window.onload = fetchRestaurantData;
+    
+    
+        </script>
+    <script>
+      function getRestaurantId() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('restaurantId') || 1; 
+            }
+            async function fetchOrders() {
+                const restaurantId = getRestaurantId();
+                if (!restaurantId) {
+                    document.getElementById("ordersList").innerHTML = "<p>Restaurant ID is missing.</p>";
+                    document.getElementById("orders").classList.remove("d-none");
+                    return;
+                }
+    
+                const apiUrl = `https://localhost:44395/api/Restaurant/orders/${restaurantId}`;
+                console.log(`Fetching orders from: ${apiUrl}`);
+    
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch orders: ${response.status} ${response.statusText}`);
+                    }
+    
+                    const orders = await response.json();
+    
+                    if (!Array.isArray(orders)) {
+                        throw new Error('Invalid response format');
+                    }
+    
+                    if (orders.length === 0) {
+                        document.getElementById("ordersList").innerHTML = "<p>No orders found for this restaurant.</p>";
+                    } else {
+                        displayOrders(orders);
+                    }
+    
+                    document.getElementById("orders").classList.remove("d-none");
+                } catch (error) {
+                    console.error("Error fetching orders:", error);
+                    document.getElementById("ordersList").innerHTML = "<p>Error loading orders. Please try again later.</p>";
+                }
+            }
+    
+            function displayOrders(orders) {
+                const ordersList = document.getElementById("ordersList");
+                ordersList.innerHTML = ""; 
+    
+                orders.forEach(order => {
+                    const orderElement = document.createElement("div");
+                    orderElement.classList.add("order-item", "mb-3");
+    
+                    orderElement.innerHTML = `
+                        <h5>Order ID: ${order.orderID}</h5>
+                        <p><strong>Food Name:</strong> ${order.foodName}</p>
+                        <p><strong>Quantity:</strong> ${order.quantity}</p>
+                        <p><strong>Total Price:</strong> $${order.totalPrice.toFixed(2)}</p>
+                        <p><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                        <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                        <p><strong>User Name:</strong> ${order.userName}</p>
+                        <hr>
+                    `;
+    
+                    ordersList.appendChild(orderElement);
+                });
+            }
+    
+            // Call the function to fetch and display orders when the page loads
+            window.addEventListener("DOMContentLoaded", fetchOrders);
+    </script>
 </body>
 
 </html>

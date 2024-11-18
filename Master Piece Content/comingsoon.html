@@ -40,9 +40,7 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <style>
-        /* General reset for padding and margins */
-/* General reset for padding and margins */
+<style>
 * {
   margin: 0;
   padding: 0;
@@ -178,6 +176,11 @@ html, body {
   color: #fe4c50;
 }
 
+.disabled-link {
+    pointer-events: none; 
+    opacity: 0.5; 
+    cursor: not-allowed;
+}
 
     </style>
 </head>
@@ -208,24 +211,10 @@ html, body {
                     </div>
                     <div class="input-block w-full h-[52px] mt-7">
                     </div>
-                    <div class="list-link flex items-center gap-6 justify-center mt-6">
-                        <a href='https://www.facebook.com/' target='_blank'>
-                            <div class="icon-facebook text-xl"></div>
-                        </a>
-                        <a href='https://www.instagram.com/' target='_blank'>
-                            <div class="icon-instagram text-xl"></div>
-                        </a>
-                        <!-- <a href='https://www.youtube.com/' target='_blank'>
-                            <div class="icon-youtube text-xl"></div>
-                        </a> -->
-                        <a href='https://www.twitter.com/' target='_blank'>
-                            <div class="icon-twitter text-xl"></div>
-                        </a>
-                    </div>
                     <!-- New buttons added here -->
                     <div class="button-block flex flex-col items-center mt-8 gap-4">
                         <a href="/index.html" class="btn btn-primary">Back to Home Page</a>
-                        <a href="/storelist.html" class="btn btn-secondary">Go to Store List</a>
+                        <a href="/storelist.html" id="storelist-btn" class="btn btn-secondary disabled-link">Go to Store List</a>
                     </div>
                 </div>
             </div>
@@ -235,39 +224,47 @@ html, body {
 
     <script src="assets/js/phosphor-icons.js"></script>
     <script>
+   
     // Countdown Timer
     function countdownTimer() {
-        // Set the date we're counting down to
-        const countDownDate = new Date().getTime() + (35 * 24 * 60 * 60 * 1000); // 35 days from now
-    
-        // Update the countdown every 1 second
-        const countdownFunction = setInterval(function() {
-            // Get today's date and time
-            const now = new Date().getTime();
-          
-            // Find the distance between now and the countdown date
-            const distance = countDownDate - now;
-    
-            // Time calculations for days, hours, minutes, and seconds
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-            // Output the result in the HTML
-            document.querySelector('.countdown-hour').textContent = hours;
-            document.querySelector('.countdown-minute').textContent = minutes;
-            document.querySelector('.countdown-second').textContent = seconds;
-    
-            // If the countdown is finished, stop the timer and display text
-            if (distance < 0) {
-                clearInterval(countdownFunction);
-                document.querySelector('.countdown-time').innerHTML = "<span>EXPIRED</span>";
-            }
-        }, 1000);
+    const now = new Date();
+    const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 0, 0);
+
+    if (now > targetTime) {
+        targetTime.setDate(targetTime.getDate() + 1);
     }
-    
-    // Start the countdown
-    countdownTimer();
+
+    const storeListButton = document.getElementById('storelist-btn');
+
+    // Initially disable the button
+    storeListButton.classList.add('disabled-link');
+
+    const countdownFunction = setInterval(function () {
+        const now = new Date().getTime();
+        const distance = targetTime.getTime() - now;
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.querySelector('.countdown-hour').textContent = hours.toString().padStart(2, '0');
+        document.querySelector('.countdown-minute').textContent = minutes.toString().padStart(2, '0');
+        document.querySelector('.countdown-second').textContent = seconds.toString().padStart(2, '0');
+
+        if (distance < 0) {
+            clearInterval(countdownFunction);
+            document.querySelector('.countdown-time').innerHTML = "<span>EXPIRED</span>";
+
+            // Enable the button when the timer finishes
+            storeListButton.classList.remove('disabled-link');
+        }
+    }, 1000);
+}
+
+// Start the countdown
+countdownTimer();
+
+
 </script>    
 </body>
 

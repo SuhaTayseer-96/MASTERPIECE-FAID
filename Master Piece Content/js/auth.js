@@ -8,9 +8,10 @@ var storelistLink = document.getElementById("storelistLink");
 function checkLoginStatus() {
     debugger;
     var userId = localStorage.getItem('userId');
+    var restaurantId = localStorage.getItem('restaurantId');
     var userEmail = localStorage.getItem('email'); 
 
-    if (userId) {
+    if (userId ||restaurantId ) {
         authButton.innerText = "Logout";
         authButton.href = "#"; 
         authButton.addEventListener('click', logout); 
@@ -41,6 +42,7 @@ function checkLoginStatus() {
 
 function logout() {
     localStorage.removeItem('userId');
+    localStorage.removeItem('restaurantId');
     localStorage.removeItem('email'); 
     Swal.fire({
         title: 'Are you sure?',

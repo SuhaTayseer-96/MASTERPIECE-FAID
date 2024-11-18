@@ -998,7 +998,7 @@
             const messages = await response.json();
             
             const tableBody = document.getElementById('contactUsMessagesTable');
-            tableBody.innerHTML = '';  // Clear existing rows
+            tableBody.innerHTML = '';  
 
             messages.forEach(msg => {
                 tableBody.innerHTML += `
@@ -1016,7 +1016,6 @@
         }
     }
 
-    // Call the function to load the messages when the page loads
     document.addEventListener('DOMContentLoaded', fetchContactUsMessages);
 </script>
 

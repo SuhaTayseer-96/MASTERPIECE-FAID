@@ -283,10 +283,10 @@
         <div class="deal-content">
           <h1>Best Price For You</h1>
           <h3>Available for a Limited Time!</h3>
-          <h2>Don’t miss out on today's special meal offering. Freshly prepared and available to you for a limited time.
+          <h2>Stay Tuned At 21:00 PM
           </h2>
           
-          <a href="storelist.html" class="btn btn-success py-3 px-5" type="button">Shop Now</a>
+          <a href="comingsoon.html" class="btn btn-success py-3 px-5" type="button">Shop Now</a>
         </div>
       </div>
     </div>
@@ -573,8 +573,8 @@
         ];
     
         let currentIndex = 0;
-        const displayDuration = 5000; // Duration for each restaurant display
-        const transitionDuration = 1000; // Duration for the slide transition
+        const displayDuration = 5000; 
+        const transitionDuration = 1000;
     
         function updateNotification() {
             const restaurant = restaurants[currentIndex];
@@ -582,26 +582,20 @@
             const itemsElement = document.getElementById("restaurant-items");
             const notificationElement = document.querySelector(".notification");
     
-            // Update the content
             nameElement.textContent = restaurant.name;
             itemsElement.textContent = restaurant.items;
     
-            // Trigger the show class to slide in
             notificationElement.classList.add("show");
     
             setTimeout(() => {
-                // Remove show class to slide out
                 notificationElement.classList.remove("show");
     
-                // Increment the index to show the next restaurant
                 currentIndex = (currentIndex + 1) % restaurants.length;
             }, displayDuration);
     
-            // Update notification every displayDuration + transitionDuration
             setTimeout(updateNotification, displayDuration + transitionDuration);
         }
     
-        // Initial display
         updateNotification();
     </script>
 
@@ -610,7 +604,7 @@
 
 
 <script>
-// Function to fetch news posts from the API
+// Function to fetch news blog from the API
 async function fetchNewsPosts() {
     try {
         const response = await fetch('https://localhost:44395/api/Home/GetAllNews'); // Replace with your actual API endpoint
