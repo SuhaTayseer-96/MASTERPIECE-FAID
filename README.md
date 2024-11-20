@@ -14,4 +14,4 @@ Documentation: https://docs.google.com/document/d/1ep5SQK3m8xuEiRSZjGRL0LfS1g7eT
 
 Presentation + Business model: https://www.canva.com/design/DAGRZ7RSENA/3CL3wpx7hYfoS5FSi5O-AQ/edit?utm_content=DAGRZ7RSENA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
-Trello: https://trello.com/b/qY1nTS0c/masterpiece
+Trello: https://trello.com/b/qY1nTS0c/masterpiece .
